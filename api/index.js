@@ -7,6 +7,7 @@ const app = express();
 
 dotenv.config();
 
+const allowedOrigins = [process.env.CORS_ORIGIN || "http://193.222.62.100"];
 
 mongoose
   .connect(process.env.MONGO)
