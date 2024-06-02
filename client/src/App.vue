@@ -152,10 +152,9 @@ export default {
     searchQuery() {
       this.page = 1
       this.selectedSort = ''
-      const queryParams = this.$route.query
-      console.log(queryParams)
-
       this.fetchFirms()
+
+     
     }
   }
 }
