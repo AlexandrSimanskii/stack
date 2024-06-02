@@ -4,9 +4,20 @@
       <tr>
         <th>
           Название
-          <i class="pi pi-arrow-down arrow" style="font-size: 1.5rem"></i>
+          <i
+            class="pi pi-arrow-down arrow"
+            style="font-size: 1.5rem"
+            @click="$emit('sort', 'title')"
+          ></i>
         </th>
-        <th>ФИО директора <i class="pi pi-arrow-down arrow" style="font-size: 1.5rem"></i></th>
+        <th>
+          ФИО директора
+          <i
+            class="pi pi-arrow-down arrow"
+            style="font-size: 1.5rem"
+            @click="$emit('sort', 'director')"
+          ></i>
+        </th>
         <th>Номер телефона</th>
         <th></th>
       </tr>

@@ -16,7 +16,7 @@
       <my-dialog v-model:show="dialogVisible">
         <post-form v-model:show="dialogVisible" @create="addFirm"
       /></my-dialog>
-      <firm-table :firms="sortedAndSearchedFirm" @remove="removeFirm"></firm-table>
+      <firm-table :firms="sortedAndSearchedFirm" @sort="setselectedSort"></firm-table>
       <!-- <post-list :firms="sortedAndSearchedFirm" @remove="removeFirm" v-if="!isFirmsLoading" /> -->
 
       <!-- <div v-else>Идет загрузка...</div> -->
@@ -61,6 +61,9 @@ export default {
     }
   },
   methods: {
+    setselectedSort(data) {
+      this.selectedSort = data
+    },
     async addFirm(post) {
       try {
         const newFirm = await axios.post('api/post', {
