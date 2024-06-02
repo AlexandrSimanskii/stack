@@ -4,11 +4,9 @@
       <h1 class="title">Cтраница с постами</h1>
 
       <div class="top">
-        <my-input v-model="searchQuery" placeholder="Поиск" /><my-button
-          class="btn__show-dialog"
-          @click="showDialog"
-          >Добавить</my-button
-        >
+        <my-input v-model="searchQuery" placeholder="Поиск" />
+
+        <my-button class="btn__show-dialog" @click="showDialog">Добавить</my-button>
       </div>
 
       <div class="app__btns"></div>
@@ -16,10 +14,15 @@
       <my-dialog v-model:show="dialogVisible">
         <post-form v-model:show="dialogVisible" @create="addFirm"
       /></my-dialog>
-      <firm-table :firms="sortedAndSearchedFirm" @sort="setselectedSort"></firm-table>
+      <firm-table
+        :firms="firms"
+        @remove="removeFirm"
+        @sort="setSelectedSort"
+        v-if="isFirms"
+      ></firm-table>
       <!-- <post-list :firms="sortedAndSearchedFirm" @remove="removeFirm" v-if="!isFirmsLoading" /> -->
 
-      <!-- <div v-else>Идет загрузка...</div> -->
+      <div v-else>Нет данных с такими параметрами...</div>
       <div class="change__page">
         <i class="pi pi-arrow-left" style="font-size: 1.5rem" @click="pageDown"></i>
 
@@ -61,8 +64,10 @@ export default {
     }
   },
   methods: {
-    setselectedSort(data) {
+    setSelectedSort(data) {
+      this.page = 1
       this.selectedSort = data
+      this.fetchFirms()
     },
     async addFirm(post) {
       try {
@@ -73,6 +78,7 @@ export default {
         })
 
         this.firms.unshift(newFirm.data.firm)
+        this.firms.splice(-1, 1)
       } catch (error) {
         console.log(error)
       } finally {
@@ -94,7 +100,9 @@ export default {
     async fetchFirms() {
       this.isFirmsLoading = true
       try {
-        const res = await axios.get(`/api/get?_limit=${this.limit}&_page=${this.page}`)
+        const res = await axios.get(
+          `/api/get?_limit=${this.limit}&_page=${this.page}&_searchTerm=${this.searchQuery}&_sort=${this.selectedSort}`
+        )
         this.firms = res.data.firms
         this.totalPages = res.data.totalPages
       } catch (error) {
@@ -123,18 +131,30 @@ export default {
   },
   computed: {
     sortedFirms() {
-      return [...this.firms].sort((a, b) => {
-        return a[this.selectedSort]?.localeCompare(b[this.selectedSort])
-      })
-    },
-    sortedAndSearchedFirm() {
-      return this.sortedFirms.filter((post) =>
-        post.director.toLowerCase().includes(this.searchQuery.toLowerCase())
+      const sort = this.selectedSort.split('_')[0]
+      const sortBy = this.selectedSort.split('_')[1]
+
+      return [...this.firms].sort((a, b) =>
+        sortBy === 'asc' ? a[sort]?.localeCompare(b[sort]) : b[sort]?.localeCompare(a[sort])
       )
+    },
+    // sortedAndSearchedFirm() {
+    //   return this.sortedFirms.filter((post) =>
+    //     post.director.toLowerCase().includes(this.searchQuery.toLowerCase())
+    //   )
+    // },
+    isFirms() {
+      return this.firms.length > 0
     }
   },
   watch: {
     page() {
+      this.fetchFirms()
+    },
+
+    searchQuery() {
+      this.page = 1
+      this.selectedSort = ''
       this.fetchFirms()
     }
   }

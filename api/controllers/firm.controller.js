@@ -3,12 +3,17 @@ import Firm from "../models/firm.models.js";
 
 export const getFirms = async (req, res, next) => {
   try {
+    const sort = req.query._sort.split("_")[0] || "director";
+
+    const order = req.query._sort.split("_")[1] || "asc";
+
+    console.log(sort, order);
     const searchTerm = req.query._searchTerm || "";
     const limit = parseInt(req.query._limit) || 4;
     const page = parseInt(req.query._page) || 1;
 
     const searchQuery = searchTerm
-      ? { name: { $regex: searchTerm, $options: "i" } }
+      ? { director: { $regex: searchTerm, $options: "i" } }
       : {};
 
     const totalFirms = await Firm.countDocuments(searchQuery);
@@ -16,6 +21,7 @@ export const getFirms = async (req, res, next) => {
     const totalPages = Math.ceil(totalFirms / limit);
 
     const firms = await Firm.find(searchQuery)
+      .sort({ [sort]: order })
       .limit(limit)
       .skip((page - 1) * limit);
 
@@ -27,6 +33,7 @@ export const getFirms = async (req, res, next) => {
     next(error);
   }
 };
+
 export const deleteFirms = async (req, res, next) => {
   const firmId = req.query._id;
 
@@ -44,7 +51,6 @@ export const deleteFirms = async (req, res, next) => {
 export const postFirm = async (req, res, next) => {
   const { title, director, number } = req.body;
 
-  // Проверка наличия всех обязательных полей
   if (!title || !director || !number) {
     return res
       .status(400)

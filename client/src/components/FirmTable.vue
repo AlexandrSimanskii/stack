@@ -2,21 +2,13 @@
   <table class="table">
     <thead class="thead">
       <tr>
-        <th>
+        <th id="title" @click="transferSortParms">
           Название
-          <i
-            class="pi pi-arrow-down arrow"
-            style="font-size: 1.5rem"
-            @click="$emit('sort', 'title')"
-          ></i>
+          <i class="pi pi-sort-alt arrow" style="font-size: 1.5rem"></i>
         </th>
-        <th>
+        <th id="director" @click="transferSortParms">
           ФИО директора
-          <i
-            class="pi pi-arrow-down arrow"
-            style="font-size: 1.5rem"
-            @click="$emit('sort', 'director')"
-          ></i>
+          <i class="pi pi-sort-alt arrow" style="font-size: 1.5rem"></i>
         </th>
         <th>Номер телефона</th>
         <th></th>
@@ -36,19 +28,29 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      sortBy: 'asc'
+    }
+  },
   props: {
     firms: {
       type: Array,
       requered: true
-    },
-    methods: {}
+    }
+  },
+  methods: {
+    transferSortParms(e) {
+      this.sortBy === 'asc' ? (this.sortBy = 'desc') : (this.sortBy = 'asc')
+      this.$emit('sort', `${e.target.id}_${this.sortBy}`)
+    }
   }
 }
 </script>
 <style scoped>
 .arrow {
   cursor: pointer;
-  background-color: aquamarine;
+
   text-align: right;
 }
 th {

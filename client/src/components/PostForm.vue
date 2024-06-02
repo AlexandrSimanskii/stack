@@ -8,7 +8,7 @@
         class="input"
         v-model="post.number"
         mask="+7(999) 999-99 99"
-        placeholder="(999) 999-9999"
+        placeholder="+7(999) 999-9999"
       />
     </div>
 
