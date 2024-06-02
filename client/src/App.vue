@@ -5,7 +5,6 @@
 
       <div class="top">
         <my-input v-model="searchQuery" placeholder="Поиск" />
-
         <my-button class="btn__show-dialog" @click="showDialog">Добавить</my-button>
       </div>
 
@@ -20,15 +19,17 @@
         @sort="setSelectedSort"
         v-if="isFirms"
       ></firm-table>
-      <!-- <post-list :firms="sortedAndSearchedFirm" @remove="removeFirm" v-if="!isFirmsLoading" /> -->
 
+      <div v-else-if="isFirmsLoading">Загрузка...</div>
       <div v-else>Нет данных с такими параметрами...</div>
       <div class="change__page">
         <i class="pi pi-arrow-left" style="font-size: 1.5rem" @click="pageDown"></i>
-
         {{ this.page }}/{{ this.totalPages }}
         <i class="pi pi-arrow-right" style="font-size: 1.5rem" @click="pageUp"></i>
       </div>
+      <a target="_blank" href="https://github.com/AlexandrSimanskii/stack"
+        >Посмотреть код на GitHub</a
+      >
     </div>
   </div>
 </template>
@@ -36,14 +37,14 @@
 <script>
 import 'primeicons/primeicons.css'
 import PostForm from '@/components/PostForm.vue'
-// import PostList from '@/components/PostList.vue'
+
 import FirmTable from '@/components/FirmTable.vue'
 import axios from '@/utils/axios.js'
 
 export default {
   components: {
     PostForm,
-    // PostList,
+
     FirmTable
   },
   data() {
@@ -138,11 +139,7 @@ export default {
         sortBy === 'asc' ? a[sort]?.localeCompare(b[sort]) : b[sort]?.localeCompare(a[sort])
       )
     },
-    // sortedAndSearchedFirm() {
-    //   return this.sortedFirms.filter((post) =>
-    //     post.director.toLowerCase().includes(this.searchQuery.toLowerCase())
-    //   )
-    // },
+
     isFirms() {
       return this.firms.length > 0
     }
@@ -155,6 +152,9 @@ export default {
     searchQuery() {
       this.page = 1
       this.selectedSort = ''
+      const queryParams = this.$route.query
+      console.log(queryParams)
+
       this.fetchFirms()
     }
   }

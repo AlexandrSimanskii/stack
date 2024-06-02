@@ -50,12 +50,9 @@ export default {
 <style scoped>
 .arrow {
   cursor: pointer;
-
-  text-align: right;
+  margin-left: 10px;
 }
 th {
-  position: relative;
-
   border: 2px solid black;
   text-align: start;
   padding: 20px;
@@ -72,7 +69,7 @@ th:last-child {
 }
 .table {
   border-collapse: collapse;
-  /* position: relative; */
+ 
   border-radius: 8px;
   width: 100%;
   background-color: rgb(219, 230, 230);
